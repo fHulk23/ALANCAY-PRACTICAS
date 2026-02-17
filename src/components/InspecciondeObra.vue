@@ -18,18 +18,22 @@
       <p>Seleccione un expediente para trabajar</p>
     </header>
 
-    <!-- Selección de expediente -->
-    <div class="gov-card">
-      <h2>📋 Expedientes disponibles</h2>
-      <select v-model="expedienteSeleccionado">
-        <option v-for="exp in expedientes" :key="exp.nro" :value="exp">
-          {{ exp.nro }} - {{ exp.obra }}
-        </option>
-      </select>
+    <!-- Cards de expedientes -->
+    <div class="expedientes-grid">
+      <div 
+        v-for="exp in expedientes" 
+        :key="exp.nro" 
+        class="exp-card"
+        :class="{ selected: exp.nro === expedienteSeleccionado?.nro }"
+        @click="seleccionarExpediente(exp)"
+      >
+        <h3>{{ exp.nro }}</h3>
+        <p>{{ exp.obra }}</p>
+      </div>
     </div>
 
     <!-- Recuadro Fotos -->
-    <div class="gov-card">
+    <div v-if="expedienteSeleccionado" class="gov-card">
       <h2>📸 Fotos Firmadas (1 - 5)</h2>
       <input type="file" accept="image/*" multiple @change="handleImages" />
       <p v-if="imageError" class="gov-error">{{ imageError }}</p>
@@ -42,16 +46,16 @@
     </div>
 
     <!-- Recuadro PDF -->
-    <div class="gov-card">
+    <div v-if="expedienteSeleccionado" class="gov-card">
       <h2>📄 PDF Firmado</h2>
       <input type="file" accept="application/pdf" @change="handlePDF" />
       <p v-if="pdfName" class="gov-info">Archivo seleccionado: {{ pdfName }}</p>
     </div>
 
     <!-- Generar planilla Excel -->
-    <div class="gov-card">
+    <div v-if="expedienteSeleccionado" class="gov-card">
       <h2>📊 Generar Planilla Excel</h2>
-      <button class="gov-btn" :disabled="!expedienteSeleccionado" @click="downloadExcel">
+      <button class="gov-btn" @click="downloadExcel">
         Descargar Excel del expediente
       </button>
     </div>
@@ -74,7 +78,7 @@ interface Expediente { nro: string; obra: string; }
 const usuario = ref("Juan Pérez");
 const rol = ref("Inspector");
 const darkMode = ref(false);
-const toggleDarkMode = () => { darkMode.value = !darkMode.value };
+const toggleDarkMode = () => { darkMode.value = !darkMode.value; };
 
 // Expedientes precargados
 const expedientes = ref<Expediente[]>([
@@ -84,7 +88,14 @@ const expedientes = ref<Expediente[]>([
   { nro: "EXP004", obra: "Obra D" }
 ]);
 
-const expedienteSeleccionado = ref<Expediente | null>(expedientes.value[0]);
+const expedienteSeleccionado = ref<Expediente | null>(null);
+
+// Manejo de selección de tarjeta
+const seleccionarExpediente = (exp: Expediente) => {
+  expedienteSeleccionado.value = exp;
+  images.value = [];
+  pdfName.value = "";
+};
 
 // Manejo de archivos
 const images = ref<ImageFile[]>([]);
@@ -128,14 +139,13 @@ const downloadExcel = () => {
   XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte");
   const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
   const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-
   saveAs(blob, `Expediente_${expedienteSeleccionado.value.nro}.xlsx`);
 };
 </script>
 
 <style scoped>
 .gov-container {
-  max-width: 900px;
+  max-width: 950px;
   width: 95%;
   margin: auto;
   padding: 20px;
@@ -166,7 +176,32 @@ const downloadExcel = () => {
 .gov-header h1 { margin: 0; font-size: 1.8em; }
 .gov-header p { margin: 5px 0 0 0; font-size: 1em; color: #d0d8ea; }
 
-/* Tarjetas */
+/* Grid de expedientes */
+.expedientes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  justify-content: center;
+  width: 100%;
+}
+
+.exp-card {
+  background: white;
+  border-left: 6px solid #1a3e7a;
+  border-radius: 8px;
+  padding: 20px;
+  width: 180px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.exp-card:hover { transform: translateY(-5px); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
+.exp-card.selected { background: #e0f0ff; border-left-color: #007bff; }
+
+/* Tarjetas internas (Fotos / PDF / Excel) */
 .gov-card {
   background: white;
   border-left: 6px solid #1a3e7a;
@@ -176,14 +211,7 @@ const downloadExcel = () => {
   width: 100%;
   max-width: 800px;
   box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-}
-
-/* Select */
-select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  transition: all 0.3s ease;
 }
 
 /* Previews */
@@ -194,7 +222,6 @@ select {
 /* Botón */
 .gov-btn { background-color: #1a3e7a; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
 .gov-btn:hover { background-color: #16325c; }
-.gov-btn:disabled { background-color: #888; cursor: not-allowed; }
 
 /* Mensajes */
 .gov-error { color: red; font-weight: bold; }
@@ -208,12 +235,17 @@ select {
 .dark .gov-card { background: #2c2c2c; border-left-color: #4e8cff; }
 .dark .gov-header { background-color: #111; }
 .dark input, .dark select { background: #333; color: white; border: 1px solid #555; }
+.dark .exp-card { background: #2c2c2c; border-left-color: #4e8cff; }
+.dark .exp-card.selected { background: #0056b3; color: white; }
 
 /* Responsive */
 @media (max-width: 600px) {
   .gov-container { padding: 10px; }
   .mode-btn { margin-top: 10px; }
+  .exp-card { width: 100%; }
 }
 </style>
+
+
 
 
