@@ -40,14 +40,34 @@ export default {
   data() {
     return {
       usuario: {
-        nombre: "Agustin Gimenez",
-        cargo: "Inspector"
+        nombre: "",
+        cargo: ""
       }
     };
   },
+
+  mounted() {
+    const logueado = localStorage.getItem("logueado")
+
+    if (!logueado) {
+      this.$router.push("/")
+      return
+    }
+
+    this.usuario.nombre = localStorage.getItem("nombreCompleto")
+    this.usuario.cargo = localStorage.getItem("rol")
+  },
+
   methods: {
     goTo(routeName) {
       this.$router.push({ name: routeName });
+    },
+
+    logout() {
+      localStorage.removeItem("logueado")
+      localStorage.removeItem("nombreCompleto")
+      localStorage.removeItem("rol")
+      this.$router.push("/")
     }
   }
 };

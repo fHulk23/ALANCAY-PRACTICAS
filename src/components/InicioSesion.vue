@@ -1,108 +1,111 @@
 <template>
-  <div class="login-container">
-    <div class="login-card">
+  <div class="auth-container">
+    <div class="auth-card">
       <h2>Iniciar Sesión</h2>
 
       <input v-model="usuario" type="text" placeholder="Usuario" />
       <input v-model="password" type="password" placeholder="Contraseña" />
 
-      <div class="foto">
-        <label>Foto de perfil</label>
-        <input type="file" @change="cargarImagen" />
-        <img v-if="preview" :src="preview" class="preview" />
-      </div>
+      <button class="btn-primary" @click="login">Ingresar</button>
 
-      <button class="btn-login">Ingresar</button>
-
-      <div class="registro-link">
-        <p>¿No sos usuario?</p>
-        <router-link to="/registro">
-          <button class="btn-registro">Crear tu cuenta</button>
-        </router-link>
-      </div>
+      <p class="switch-text">
+        ¿No tenés cuenta?
+        <router-link to="/Registro">Crear cuenta</router-link>
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue"
+import { useRouter } from "vue-router"
 
-const usuario = ref('')
-const password = ref('')
-const preview = ref(null)
+const router = useRouter()
 
-const cargarImagen = (event) => {
-  const file = event.target.files[0]
-  if (file) {
-    preview.value = URL.createObjectURL(file)
+const usuario = ref("")
+const password = ref("")
+
+const login = () => {
+  const usuarioGuardado = JSON.parse(localStorage.getItem("usuario"))
+
+  if (
+    usuarioGuardado &&
+    usuarioGuardado.usuario === usuario.value &&
+    usuarioGuardado.password === password.value
+  ) {
+    localStorage.setItem("nombreCompleto", usuarioGuardado.nombreCompleto)
+    localStorage.setItem("rol", usuarioGuardado.rol ?? "Inspector")
+    localStorage.setItem("logueado", "true")
+
+    router.push("/Home")
+  } else {
+    alert("Usuario o contraseña incorrectos")
   }
 }
 </script>
 
 <style scoped>
-.login-container {
+.h2 {
+  color: black;
+}
+.auth-container {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1e3a8a, #1f2937);
-  color: white;
+  background: linear-gradient(135deg, #1e3a8a, #0f172a);
 }
 
-.login-card {
+.auth-card {
+  color: black;
   background: white;
-  color: #1f2d3d;
   padding: 40px;
   border-radius: 20px;
-  width: 350px;
+  width: 380px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  animation: fadeIn 0.5s ease;
 }
 
 input {
   width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  transition: 0.2s;
 }
 
-.btn-login {
+input:focus {
+  border-color: #1e3a8a;
+  outline: none;
+}
+
+.btn-primary {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   margin-top: 10px;
   border-radius: 30px;
   border: none;
-  background-color: #1e3a8a;
+  background: #1e3a8a;
   color: white;
   font-weight: bold;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-.btn-login:hover {
-  background-color: #162d6b;
+.btn-primary:hover {
+  background: #162d6b;
+  transform: translateY(-2px);
 }
 
-.btn-registro {
-  margin-top: 10px;
-  padding: 8px 20px;
-  border-radius: 30px;
-  border: 2px solid #1e3a8a;
-  background: transparent;
-  color: #1e3a8a;
-  cursor: pointer;
+.switch-text {
+  margin-top: 15px;
+  font-size: 14px;
 }
 
-.btn-registro:hover {
-  background: #1e3a8a;
-  color: white;
-}
-
-.preview {
-  margin-top: 10px;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
