@@ -223,49 +223,58 @@ const volver = () => {
 <style scoped>
 /* --- CONTENEDOR PRINCIPAL --- */
 .gov-container {
-  max-width: 950px;
-  width: 95%;
-  margin: auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px 40px;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.3s ease;
-  background-color: #f4f6f8;
-  color: #333; /* Texto oscuro por defecto */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #f4f6f8; /* Fondo que ahora sí llena toda la pantalla */
+  color: #333;
+  box-sizing: border-box;
 }
 
-/* --- BARRA SUPERIOR (Layout de 3 columnas) --- */
+/* --- BARRA SUPERIOR (Layout expansivo) --- */
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-bottom: 20px;
-  position: relative; /* Base para el centrado del perfil */
-  min-height: 50px;
+  max-width: 1400px; /* Evita que los botones se peguen demasiado a los bordes en monitores 4K */
+  margin-bottom: 30px;
+  position: relative;
+  min-height: 60px;
 }
 
-/* Perfil centrado en el medio de la pantalla */
+/* Perfil centrado */
 .profile-info { 
   display: flex; 
   flex-direction: column; 
   align-items: center; 
-  gap: 2px;
+  gap: 4px;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
 }
 
-.user-name { font-weight: bold; font-size: 0.95em; color: #333; }
+.user-name { 
+  font-weight: 700; 
+  font-size: 1rem; 
+  color: #1a3e7a; 
+}
+
 .user-role { 
   background: #1a3e7a; 
   color: white; 
-  padding: 2px 10px; 
-  border-radius: 12px; 
-  font-size: 0.75em; 
+  padding: 3px 12px; 
+  border-radius: 15px; 
+  font-size: 0.75rem; 
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Botones laterales */
@@ -273,8 +282,8 @@ const volver = () => {
   background-color: transparent;
   color: #1a3e7a;
   border: 2px solid #1a3e7a;
-  padding: 6px 14px;
-  border-radius: 20px;
+  padding: 8px 18px;
+  border-radius: 25px;
   cursor: pointer;
   font-weight: bold;
   transition: all 0.3s ease;
@@ -284,16 +293,18 @@ const volver = () => {
 .back-btn:hover {
   background-color: #1a3e7a;
   color: white;
-  transform: translateX(-3px);
+  transform: translateX(-4px);
 }
 
 .mode-btn { 
-  background: #444; 
+  background: #333; 
   color: white; 
   border: none; 
-  padding: 8px 14px; 
-  border-radius: 20px; 
+  padding: 10px 16px; 
+  border-radius: 25px; 
   cursor: pointer; 
+  font-weight: 600;
+  transition: 0.3s;
   z-index: 10;
 }
 
@@ -302,119 +313,182 @@ const volver = () => {
   text-align: center; 
   background-color: #1a3e7a; 
   color: white; 
-  padding: 20px; 
-  border-radius: 8px; 
-  margin-bottom: 20px; 
-  width: 100%; 
-}
-.gov-header h1 { margin: 0; font-size: 1.8em; }
-.gov-header p { margin: 5px 0 0 0; font-size: 1em; color: #d0d8ea; }
-
-/* --- GRID Y CARDS --- */
-.expedientes-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
-  justify-content: center;
+  padding: 40px 20px; 
+  border-radius: 12px; 
+  margin-bottom: 30px; 
   width: 100%;
+  max-width: 1400px;
+  box-shadow: 0 4px 20px rgba(26, 62, 122, 0.15);
+}
+
+.gov-header h1 { margin: 0; font-size: 2.2rem; letter-spacing: -0.5px; }
+.gov-header p { margin: 10px 0 0 0; font-size: 1.1rem; color: #d0d8ea; font-weight: 300; }
+
+/* --- GRID DE EXPEDIENTES (Uso total del espacio) --- */
+.expedientes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Tarjetas más grandes y fluidas */
+  gap: 20px;
+  margin-bottom: 40px;
+  width: 100%;
+  max-width: 1400px;
 }
 
 .exp-card {
   background: white;
-  border-left: 6px solid #1a3e7a;
-  border-radius: 8px;
-  padding: 20px;
-  width: 200px;
+  border-left: 8px solid #1a3e7a;
+  border-radius: 12px;
+  padding: 25px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
   color: #333;
 }
 
-.exp-card:hover { transform: translateY(-5px); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
-.exp-card.selected { background: #e0f0ff; border-left-color: #007bff; color: #1a3e7a; }
+.exp-card:hover { 
+  transform: translateY(-8px); 
+  box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+  border-left-color: #007bff;
+}
+
+.exp-card.selected { 
+  background: #eef6ff; 
+  border-left-color: #007bff; 
+  outline: 2px solid #007bff;
+}
+
+.exp-card h3 { 
+  margin: 0 0 12px 0; 
+  color: #1a3e7a; 
+  font-size: 1.3rem; 
+}
+
+.exp-card p { 
+  margin: 5px 0; 
+  font-size: 0.95rem; 
+  color: #555; 
+  line-height: 1.4;
+}
 
 /* --- FORMULARIO Y LINKS --- */
 .gov-card {
   background: white;
-  border-left: 6px solid #1a3e7a;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 6px;
+  border-top: 6px solid #1a3e7a;
+  padding: 40px;
+  margin-bottom: 40px;
+  border-radius: 15px;
   width: 100%;
-  max-width: 800px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-  color: #333;
+  max-width: 850px; /* Ancho controlado para lectura cómoda */
+  box-shadow: 0px 15px 35px rgba(0,0,0,0.08);
+}
+
+.gov-card h2 { 
+  margin-top: 0; 
+  margin-bottom: 25px; 
+  color: #1a3e7a; 
+  font-size: 1.6rem; 
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.input-group label { font-weight: bold; margin-bottom: 5px; color: #333; }
+.input-group label { 
+  font-weight: 600; 
+  margin-bottom: 8px; 
+  color: #444; 
+  font-size: 0.95rem;
+}
+
 .input-group input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  color: #333;
-  background: white;
+  padding: 14px 18px;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+}
+
+.input-group input:focus {
+  border-color: #1a3e7a;
+  background-color: white;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(26, 62, 122, 0.1);
 }
 
 .gov-btn { 
   background-color: #1a3e7a; 
   color: white; 
-  padding: 10px 20px; 
+  padding: 16px 32px; 
   border: none; 
-  border-radius: 4px; 
+  border-radius: 30px; 
   cursor: pointer; 
   font-weight: bold;
+  font-size: 1rem;
+  width: 100%;
+  transition: 0.3s;
+  margin-top: 10px;
 }
-.gov-btn:hover { background-color: #16325c; }
 
-/* --- MENSAJES Y FOOTER --- */
-.gov-error { color: #d32f2f; font-weight: bold; font-size: 0.85em; margin-top: 4px; }
-.gov-info { color: #1a3e7a; font-weight: bold; }
-.gov-footer { text-align: center; font-size: 0.9em; color: #555; margin-top: 30px; width: 100%; }
+.gov-btn:hover { 
+  background-color: #0d2650; 
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(26, 62, 122, 0.3);
+}
 
-/* --- MODO OSCURO (Overrides) --- */
-.dark { background-color: #1e1e1e; color: #f1f1f1; }
+/* --- ESTADOS Y FOOTER --- */
+.gov-error { color: #d32f2f; font-weight: 600; font-size: 0.85rem; margin-top: 6px; }
+.gov-info { font-size: 1.2rem; color: #1a3e7a; padding: 40px; font-weight: 600; }
+.gov-footer { text-align: center; padding: 40px 0; color: #888; font-size: 0.9rem; width: 100%; }
 
-.dark .user-name { color: #f1f1f1; }
-.dark .back-btn { color: #f1f1f1; border-color: #f1f1f1; }
-.dark .back-btn:hover { background-color: #f1f1f1; color: #1e1e1e; }
+/* --- MODO OSCURO (DARK MODE) --- */
+.dark { background-color: #121212; color: #e0e0e0; }
 
+.dark .user-name { color: #4e8cff; }
+.dark .back-btn { color: #e0e0e0; border-color: #444; }
+.dark .back-btn:hover { background-color: #e0e0e0; color: #121212; border-color: #e0e0e0; }
+.dark .mode-btn { background: #e0e0e0; color: #121212; }
+
+.dark .gov-header { background-color: #0a1931; }
 .dark .gov-card, .dark .exp-card { 
-  background: #2c2c2c; 
+  background: #1e1e1e; 
   border-left-color: #4e8cff; 
-  color: #f1f1f1; 
+  color: #e0e0e0; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.dark .exp-card.selected { background: #004a99; color: white; }
+.dark .exp-card h3 { color: #4e8cff; }
+.dark .exp-card p { color: #bbb; }
+.dark .exp-card.selected { background: #1a3e7a; border-left-color: #4e8cff; }
 
+.dark .gov-card { border-top-color: #4e8cff; }
+.dark .gov-card h2 { color: #4e8cff; }
+.dark .input-group label { color: #bbb; }
 .dark input { 
-  background: #333; 
+  background: #2c2c2c; 
   color: white; 
-  border: 1px solid #555; 
+  border-color: #444; 
 }
-
-.dark .input-group label { color: #f1f1f1; }
-.dark .gov-header { background-color: #111; }
-.dark .gov-footer { color: #aaa; }
+.dark input:focus { border-color: #4e8cff; }
+.dark .gov-btn { background-color: #4e8cff; color: #0a1931; }
+.dark .gov-footer { color: #555; }
 
 /* --- RESPONSIVE --- */
-@media (max-width: 700px) {
-  .top-bar { flex-direction: row; justify-content: space-between; }
+@media (max-width: 900px) {
+  .gov-container { padding: 15px 20px; }
+  .top-bar { flex-direction: row; flex-wrap: wrap; }
   .profile-info { 
     position: static; 
     transform: none; 
     order: 3; 
     width: 100%; 
-    margin-top: 15px; 
+    margin-top: 20px; 
   }
-  .exp-card { width: 100%; }
+  .expedientes-grid { grid-template-columns: 1fr; }
+  .gov-header h1 { font-size: 1.6rem; }
 }
 </style>
