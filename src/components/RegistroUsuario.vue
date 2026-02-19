@@ -16,6 +16,9 @@
       <button class="btn-primary" @click="registrar">
         Crear Cuenta
       </button>
+      <button class="btn-secondary" @click="volver">
+        Volver
+      </button>
     </div>
   </div>
 </template>
@@ -42,6 +45,10 @@ const registrar = () => {
   localStorage.setItem("usuario", JSON.stringify(nuevoUsuario))
 
   alert("Cuenta creada correctamente")
+  router.push("/")
+}
+
+const volver = () => {
   router.push("/")
 }
 </script>
@@ -126,6 +133,26 @@ input:focus {
 
 .btn-primary:hover {
   background: #162d6b;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 30px;
+  background: transparent;
+  border: 2px solid #1e3a8a; 
+  color: #1e3a8a;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #f0f4ff;
+  color: #162d6b;
+  border-color: #162d6b;
   transform: translateY(-2px);
 }
 

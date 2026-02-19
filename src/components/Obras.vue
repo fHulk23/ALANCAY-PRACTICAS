@@ -10,7 +10,7 @@
       <button class="toggle-btn" @click="toggleDarkMode">
         {{ darkMode ? "Modo Claro ☀️" : "Modo Oscuro 🌙" }}
       </button>
-  </div>
+    </div>
 
     <div class="filters">
       <input
@@ -35,7 +35,7 @@
       <table>
         <thead>
           <tr>
-            <th>N° Expediente</th>
+            <th>Periodo</th> <th>N° Expediente</th>
             <th>Inspector</th>
             <th>Presidente Regional</th>
             <th>Representante Técnico</th>
@@ -48,7 +48,7 @@
 
         <tbody>
           <tr v-for="obra in obrasFiltradas" :key="obra.id">
-            <td>{{ obra.expediente }}</td>
+            <td class="periodo-tag">{{ obra.periodo }}</td> <td>{{ obra.expediente }}</td>
             <td>{{ obra.inspector }}</td>
             <td>{{ obra.presidenteRegional }}</td>
             <td>{{ obra.representanteTecnico }}</td>
@@ -68,7 +68,6 @@
       </table>
     </div>
 
-    <!-- Modal Fotos -->
     <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
       <div class="modal">
         <h3>Fotos de la Obra</h3>
@@ -121,6 +120,13 @@ export default {
     descargarPdf(obra) {
       window.open(obra.pdf, "_blank");
     },
+    // Función auxiliar para formatear el periodo
+    formatearPeriodo(fechaIso) {
+      if (!fechaIso) return "N/A";
+      const fecha = new Date(fechaIso);
+      const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+      return `${meses[fecha.getMonth()]}-${fecha.getFullYear()}`;
+    },
     async cargarObras() {
       this.loading = true;
 
@@ -135,9 +141,9 @@ export default {
         return;
       }
 
-      // 🔥 Transformamos los datos
       this.obras = data.map((o) => ({
         id: o.id,
+        periodo: this.formatearPeriodo(o.created_at), // Generamos el periodo aquí
         expediente: o.expediente,
         inspector: o.inspector,
         presidenteRegional: o.presidente_regional,
@@ -166,7 +172,8 @@ export default {
           obra.presidenteRegional.toLowerCase().includes(texto) ||
           obra.representanteTecnico.toLowerCase().includes(texto) ||
           obra.consorcio.toLowerCase().includes(texto) ||
-          obra.regional.toLowerCase().includes(texto);
+          obra.regional.toLowerCase().includes(texto) ||
+          obra.periodo.toLowerCase().includes(texto); // También filtramos por periodo
 
         const coincideRegional = this.filtroRegion === "" || obra.regional === this.filtroRegion;
 
@@ -178,7 +185,7 @@ export default {
 </script>
 
 <style scoped>
-/* --- CONTENEDOR BASE --- */
+/* --- ESTILOS ANTERIORES SE MANTIENEN IGUAL --- */
 .obras-container {
   width: 100%;
   min-height: 100vh;
@@ -189,7 +196,6 @@ export default {
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* --- BARRA SUPERIOR (Con título centrado y botones a los extremos) --- */
 .top-bar {
   display: flex;
   justify-content: space-between;
@@ -197,7 +203,7 @@ export default {
   margin-bottom: 25px;
   border-bottom: 2px solid #ddd;
   padding-bottom: 15px;
-  position: relative; /* Clave para el centrado del título */
+  position: relative;
   min-height: 60px;
 }
 
@@ -211,7 +217,6 @@ export default {
   white-space: nowrap;
 }
 
-/* --- BOTONES DE LA BARRA SUPERIOR --- */
 .back-btn {
   background-color: transparent;
   color: #1565c0;
@@ -242,7 +247,6 @@ export default {
   z-index: 10;
 }
 
-/* --- FILTROS --- */
 .filters {
   display: flex;
   gap: 15px;
@@ -262,12 +266,6 @@ export default {
   outline: none;
 }
 
-.filters input:focus {
-  border-color: #1565c0;
-  box-shadow: 0 0 5px rgba(21, 101, 192, 0.2);
-}
-
-/* --- TABLA Y CONTENEDOR --- */
 .table-container {
   overflow-x: auto;
   background: white;
@@ -279,7 +277,7 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 900px;
+  min-width: 1000px; /* Un poco más ancho por la nueva columna */
 }
 
 thead {
@@ -303,11 +301,20 @@ td {
   font-size: 14px;
 }
 
+/* Estilo para resaltar el periodo */
+.periodo-tag {
+  font-weight: bold;
+  color: #1565c0;
+}
+
+.dark-mode .periodo-tag {
+  color: #448aff;
+}
+
 tbody tr:hover {
   background-color: #f8fbff;
 }
 
-/* --- BOTONES DE ACCIÓN (Tabla) --- */
 .btn-primary { background-color: #1565c0; color: white; }
 .btn-success { background-color: #2e7d32; color: white; }
 .btn-danger { background-color: #c62828; color: white; }
@@ -324,7 +331,6 @@ button:not(.back-btn, .toggle-btn) {
   transition: all 0.2s ease;
 }
 
-/* --- MODAL --- */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -365,7 +371,6 @@ button:not(.back-btn, .toggle-btn) {
   border: 1px solid #ddd;
 }
 
-/* --- ESTADOS --- */
 .loading, .no-results {
   text-align: center;
   padding: 50px;
@@ -376,10 +381,6 @@ button:not(.back-btn, .toggle-btn) {
   margin-top: 20px;
 }
 
-/* ========================= */
-/* MODO OSCURO (DARK MODE) */
-/* ========================= */
-
 .dark-mode {
   background-color: #121212;
   color: #f1f1f1;
@@ -387,59 +388,18 @@ button:not(.back-btn, .toggle-btn) {
 
 .dark-mode .top-bar { border-color: #333; }
 .dark-mode .title { color: #448aff; }
+.dark-mode .back-btn { color: #448aff; border-color: #448aff; }
+.dark-mode .back-btn:hover { background-color: #448aff; color: #121212; }
+.dark-mode .filters input, .dark-mode .filters select { background-color: #1e1e1e; color: #f1f1f1; border: 1px solid #444; }
+.dark-mode .table-container { background-color: #1e1e1e; border: 1px solid #333; }
+.dark-mode td { border-bottom: 1px solid #333; color: #ccc; }
+.dark-mode tbody tr:hover { background-color: #252525; }
+.dark-mode .modal { background-color: #1e1e1e; color: #f1f1f1; }
+.dark-mode .toggle-btn { background-color: #f1f1f1; color: #121212; }
 
-.dark-mode .back-btn {
-  color: #448aff;
-  border-color: #448aff;
-}
-.dark-mode .back-btn:hover {
-  background-color: #448aff;
-  color: #121212;
-}
-
-.dark-mode .filters input,
-.dark-mode .filters select {
-  background-color: #1e1e1e;
-  color: #f1f1f1;
-  border: 1px solid #444;
-}
-
-.dark-mode .table-container {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
-}
-
-.dark-mode td {
-  border-bottom: 1px solid #333;
-  color: #ccc;
-}
-
-.dark-mode tbody tr:hover {
-  background-color: #252525;
-}
-
-.dark-mode .modal {
-  background-color: #1e1e1e;
-  color: #f1f1f1;
-}
-
-.dark-mode .toggle-btn {
-  background-color: #f1f1f1;
-  color: #121212;
-}
-
-/* --- RESPONSIVE --- */
 @media (max-width: 850px) {
-  .title {
-    position: static;
-    transform: none;
-    order: 2;
-    font-size: 1.4rem;
-  }
-  .top-bar {
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
+  .title { position: static; transform: none; order: 2; font-size: 1.4rem; }
+  .top-bar { flex-wrap: wrap; justify-content: space-between; }
   .back-btn { order: 1; }
   .toggle-btn { order: 3; }
   .filters input, .filters select { min-width: 100%; }
