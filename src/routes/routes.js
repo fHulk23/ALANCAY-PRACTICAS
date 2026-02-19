@@ -1,19 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import InspecciondeObra from '@/components/InspecciondeObra.vue'
-import Regionales from '@/components/Regionales.vue' 
 import Home from '@/components/Home.vue'
 import Obras from '@/components/Obras.vue'
+import InicioSesion from '@/components/InicioSesion.vue'
+import RegistroUsuario from '@/components/RegistroUsuario.vue'
 
 const routes = [
+  {
+    path: '/',
+    name: 'InicioSesion',
+    component: InicioSesion,
+  },
+  {
+    path: '/Registro',
+    name: 'RegistroUsuario',
+    component: RegistroUsuario,
+  },
   {
     path: '/InspecciondeObra',
     name: 'InspecciondeObra',
     component: InspecciondeObra,
-  },
-  {
-    path: '/regionales', 
-    name: 'Regionales',
-    component: Regionales,
   },
   {
     path: '/Home', 

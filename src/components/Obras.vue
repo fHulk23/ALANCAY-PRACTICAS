@@ -1,11 +1,16 @@
 <template>
   <div :class="['obras-container', { 'dark-mode': darkMode }]">
     <div class="top-bar">
+      <button class="back-btn" @click="volver">
+        ⬅ Volver
+      </button>
+
       <h1 class="title">Listado de Obras</h1>
+
       <button class="toggle-btn" @click="toggleDarkMode">
         {{ darkMode ? "Modo Claro ☀️" : "Modo Oscuro 🌙" }}
       </button>
-    </div>
+  </div>
 
     <div class="filters">
       <input
@@ -97,6 +102,9 @@ export default {
     await this.cargarObras();
   },
   methods: {
+    volver() {
+      this.$router.push("/Home");
+    },
     toggleDarkMode() {
       this.darkMode = !this.darkMode;
     },
@@ -170,94 +178,108 @@ export default {
 </script>
 
 <style scoped>
-.loading {
-  text-align: center;
-  padding: 30px;
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.no-results {
-  text-align: center;
-  padding: 30px;
-  font-size: 16px;
-  color: #777;
-}
-
-.dark-mode .no-results {
-  color: #aaa;
-}
-
-.filters {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.filters input,
-.filters select {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  min-width: 220px;
-}
-
-.dark-mode .filters input,
-.dark-mode .filters select {
-  background-color: #2c2c2c;
-  color: white;
-  border: 1px solid #555;
-}
-
+/* --- CONTENEDOR BASE --- */
 .obras-container {
   width: 100%;
   min-height: 100vh;
   padding: 30px;
   background-color: #f4f6f9;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
+  color: #333;
+  transition: background-color 0.3s, color 0.3s;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* TOP BAR */
+/* --- BARRA SUPERIOR (Con título centrado y botones a los extremos) --- */
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 15px;
+  position: relative; /* Clave para el centrado del título */
+  min-height: 60px;
 }
 
 .title {
   margin: 0;
+  color: #1565c0;
+  font-size: 1.8rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* --- BOTONES DE LA BARRA SUPERIOR --- */
+.back-btn {
+  background-color: transparent;
+  color: #1565c0;
+  border: 2px solid #1565c0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.back-btn:hover {
+  background-color: #1565c0;
+  color: white;
+  transform: translateX(-3px);
 }
 
 .toggle-btn {
   background-color: #333;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border: none;
   border-radius: 20px;
   cursor: pointer;
+  font-weight: 600;
   transition: 0.3s;
+  z-index: 10;
 }
 
-.toggle-btn:hover {
-  opacity: 0.85;
+/* --- FILTROS --- */
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
-/* Tabla */
+.filters input,
+.filters select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  min-width: 250px;
+  background-color: white;
+  color: #333;
+  font-size: 14px;
+  outline: none;
+}
+
+.filters input:focus {
+  border-color: #1565c0;
+  box-shadow: 0 0 5px rgba(21, 101, 192, 0.2);
+}
+
+/* --- TABLA Y CONTENEDOR --- */
 .table-container {
   overflow-x: auto;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: background-color 0.3s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #eee;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 900px;
 }
 
 thead {
@@ -267,161 +289,159 @@ thead {
 
 th {
   font-weight: 600;
-  padding: 15px;
+  padding: 18px 15px;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
 }
 
 td {
   padding: 15px;
   text-align: center;
-}
-
-tbody tr {
-  transition: background-color 0.2s;
+  border-bottom: 1px solid #eee;
+  color: #444;
+  font-size: 14px;
 }
 
 tbody tr:hover {
-  background-color: #f1f1f1;
+  background-color: #f8fbff;
 }
 
-/* Botones */
-button {
-  padding: 6px 12px;
+/* --- BOTONES DE ACCIÓN (Tabla) --- */
+.btn-primary { background-color: #1565c0; color: white; }
+.btn-success { background-color: #2e7d32; color: white; }
+.btn-danger { background-color: #c62828; color: white; }
+.btn-close { background-color: #444; color: white; margin-top: 20px; width: 100%; padding: 12px; }
+
+button:not(.back-btn, .toggle-btn) {
+  padding: 8px 14px;
   margin: 3px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.2s;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.2s ease;
 }
 
-button:hover {
-  transform: translateY(-2px);
-}
-
-.btn-primary {
-  background-color: #1565c0;
-  color: white;
-}
-
-.btn-success {
-  background-color: #2e7d32;
-  color: white;
-}
-
-.btn-danger {
-  background-color: #c62828;
-  color: white;
-}
-
-.btn-close {
-  background-color: #444;
-  color: white;
-  margin-top: 20px;
-}
-
-/* Modal */
+/* --- MODAL --- */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
 }
 
 .modal {
   background: white;
-  padding: 25px;
-  border-radius: 12px;
-  width: 70%;
-  max-height: 80vh;
+  padding: 30px;
+  border-radius: 15px;
+  width: 80%;
+  max-width: 1000px;
+  max-height: 85vh;
   overflow-y: auto;
-  transition: background-color 0.3s;
-}
-
-.modal h3 {
-  margin-top: 0;
+  color: #333;
 }
 
 .modal-images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
 }
 
 .modal-images img {
-  width: 200px;
-  border-radius: 8px;
-  transition: transform 0.3s;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ddd;
 }
 
-.modal-images img:hover {
-  transform: scale(1.05);
+/* --- ESTADOS --- */
+.loading, .no-results {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #1565c0;
+  background: white;
+  border-radius: 12px;
+  margin-top: 20px;
 }
 
 /* ========================= */
-/* DARK MODE */
+/* MODO OSCURO (DARK MODE) */
 /* ========================= */
 
 .dark-mode {
   background-color: #121212;
-  color: #e0e0e0;
+  color: #f1f1f1;
+}
+
+.dark-mode .top-bar { border-color: #333; }
+.dark-mode .title { color: #448aff; }
+
+.dark-mode .back-btn {
+  color: #448aff;
+  border-color: #448aff;
+}
+.dark-mode .back-btn:hover {
+  background-color: #448aff;
+  color: #121212;
+}
+
+.dark-mode .filters input,
+.dark-mode .filters select {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border: 1px solid #444;
 }
 
 .dark-mode .table-container {
   background-color: #1e1e1e;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid #333;
 }
 
-.dark-mode table {
-  color: #e0e0e0;
-}
-
-.dark-mode thead {
-  background-color: #0d47a1;
+.dark-mode td {
+  border-bottom: 1px solid #333;
+  color: #ccc;
 }
 
 .dark-mode tbody tr:hover {
-  background-color: #2c2c2c;
+  background-color: #252525;
 }
 
 .dark-mode .modal {
   background-color: #1e1e1e;
-  color: #e0e0e0;
+  color: #f1f1f1;
 }
 
 .dark-mode .toggle-btn {
-  background-color: #e0e0e0;
+  background-color: #f1f1f1;
   color: #121212;
 }
 
-/* ========================= */
-/* RESPONSIVE */
-/* ========================= */
-
-@media (max-width: 768px) {
+/* --- RESPONSIVE --- */
+@media (max-width: 850px) {
+  .title {
+    position: static;
+    transform: none;
+    order: 2;
+    font-size: 1.4rem;
+  }
   .top-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
-
-  th,
-  td {
-    padding: 10px;
-    font-size: 13px;
-  }
-
-  .modal {
-    width: 90%;
-  }
-
-  .modal-images img {
-    width: 100%;
-  }
+  .back-btn { order: 1; }
+  .toggle-btn { order: 3; }
+  .filters input, .filters select { min-width: 100%; }
 }
 </style>
