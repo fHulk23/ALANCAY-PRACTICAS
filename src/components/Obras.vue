@@ -43,6 +43,7 @@
             <th>Regional</th>
             <th>Fotos</th>
             <th>PDF / Excel</th>
+            <th v-if="rol == 'Admin'"></th>
           </tr>
         </thead>
 
@@ -60,8 +61,12 @@
             </td>
 
             <td>
-              <button class="btn-success" @click="descargarExcel(obra)">Excel</button>
+              <button class="btn-success" @click="descargarExcel(obra)">EXCEL</button>
               <button class="btn-danger" @click="descargarPdf(obra)">PDF</button>
+            </td>
+            <td v-if="rol == 'Admin'">
+              <button class="btn-success" @click="editar(obra.id)">EDITAR</button>
+              <button class="btn-danger" @click="eliminar(obra.id)">ELIMINAR</button>
             </td>
           </tr>
         </tbody>
@@ -95,9 +100,14 @@ export default {
       filtroRegion: "",
       obras: [],
       loading: false,
+      usuario: "",
+      rol: ""
     };
   },
   async mounted() {
+    this.usuario = localStorage.getItem("nombreCompleto") || "";
+    this.rol = localStorage.getItem("rol") || "";
+
     await this.cargarObras();
   },
   methods: {
@@ -119,6 +129,28 @@ export default {
     },
     descargarPdf(obra) {
       window.open(obra.pdf, "_blank");
+    },
+    editar() {
+      
+    },
+    async eliminar(id) {
+      if (!confirm("¿Seguro que querés eliminar esta obra?")) return;
+
+      this.loading = true;
+
+      const { error } = await supabase
+        .from("obras")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        console.error("Error eliminando obra:", error);
+        this.loading = false;
+        return;
+      }
+
+      await this.cargarObras();
+      this.loading = false;
     },
     // Función auxiliar para formatear el periodo
     formatearPeriodo(fechaIso) {

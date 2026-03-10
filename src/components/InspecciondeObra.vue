@@ -90,7 +90,6 @@ interface Expediente {
   consorcio: string;
 }
 
-// Datos
 const usuario = ref("");
 const rol = ref("");
 
@@ -100,7 +99,7 @@ onMounted(async () => {
   const logueado = localStorage.getItem("logueado");
 
   if (!logueado) {
-    window.location.href = "/"; // o router.push si preferís
+    window.location.href = "/";
     return;
   }
 
@@ -144,7 +143,6 @@ const cargarExpedientes = async () => {
 
 const expedienteSeleccionado = ref<Expediente | null>(null);
 
-// Manejo de selección de tarjeta
 const seleccionarExpediente = (exp: Expediente) => {
   expedienteSeleccionado.value = exp;
 };
@@ -189,13 +187,12 @@ const guardarLinks = async () => {
           fotos: linkFotos.value,
           pdf: linkPdf.value,
           excel: linkExcel.value,
-          inspector: usuario.value // Aprovechamos el nombre del usuario logueado
+          inspector: usuario.value 
         }
       ]);
 
     if (error) throw error;
 
-    // 3. Limpiar el formulario para un nuevo ingreso
     limpiarFormulario();
 
     volver();
