@@ -77,9 +77,9 @@
 </template>
 
 <script lang="ts" setup>
-import { supabase } from "@/service/supabase";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { getExpedientes, createObra } from "@/service/obrasServices";
 
 interface Expediente {
   id: string;
@@ -90,7 +90,6 @@ interface Expediente {
   consorcio: string;
 }
 
-// Datos
 const usuario = ref("");
 const rol = ref("");
 
@@ -100,7 +99,7 @@ onMounted(async () => {
   const logueado = localStorage.getItem("logueado");
 
   if (!logueado) {
-    window.location.href = "/"; // o router.push si preferís
+    window.location.href = "/";
     return;
   }
 
@@ -119,32 +118,17 @@ const loading = ref(false);
 const cargarExpedientes = async () => {
   loading.value = true;
 
-  const { data, error } = await supabase
-    .from("expedientes")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
+  try {
+    expedientes.value = await getExpedientes();
+  } catch (error) {
     console.error("Error cargando expedientes:", error);
-    loading.value = false;
-    return;
   }
-
-  expedientes.value = data.map((o: any) => ({
-    id: o.id,
-    expediente: o.NroExpediente,
-    regional: o.Regional,
-    presidenteRegional: o.PresidenteRegional,
-    representanteTecnico: o.RepresentanteTecnico,
-    consorcio: o.Consorcio
-  }));
 
   loading.value = false;
 };
 
 const expedienteSeleccionado = ref<Expediente | null>(null);
 
-// Manejo de selección de tarjeta
 const seleccionarExpediente = (exp: Expediente) => {
   expedienteSeleccionado.value = exp;
 };
@@ -175,30 +159,23 @@ const guardarLinks = async () => {
   if (!expedienteSeleccionado.value) return alert("Por favor, selecciona un expediente primero.");
 
   loading.value = true;
-  
+
   try {
-    const { error } = await supabase
-      .from("obras")
-      .insert([
-        {
-          expediente: expedienteSeleccionado.value.expediente,
-          regional: expedienteSeleccionado.value.regional,
-          presidente_regional: expedienteSeleccionado.value.presidenteRegional,
-          representante_tecnico: expedienteSeleccionado.value.representanteTecnico,
-          consorcio: expedienteSeleccionado.value.consorcio,
-          fotos: linkFotos.value,
-          pdf: linkPdf.value,
-          excel: linkExcel.value,
-          inspector: usuario.value // Aprovechamos el nombre del usuario logueado
-        }
-      ]);
+    await createObra({
+      expediente: expedienteSeleccionado.value.expediente,
+      regional: expedienteSeleccionado.value.regional,
+      presidenteRegional: expedienteSeleccionado.value.presidenteRegional,
+      representanteTecnico: expedienteSeleccionado.value.representanteTecnico,
+      consorcio: expedienteSeleccionado.value.consorcio,
+      fotos: linkFotos.value,
+      pdf: linkPdf.value,
+      excel: linkExcel.value,
+      inspector: usuario.value
+    });
 
-    if (error) throw error;
-
-    // 3. Limpiar el formulario para un nuevo ingreso
     limpiarFormulario();
-
     volver();
+
   } catch (err) {
     console.error("Error al insertar:", err);
     alert("Error al intentar guardar la obra.");
