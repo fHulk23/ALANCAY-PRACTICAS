@@ -65,7 +65,6 @@
               <button class="btn-danger" @click="descargarPdf(obra)">PDF</button>
             </td>
             <td v-if="rol == 'Admin'">
-              <button class="btn-success" @click="editar(obra.id)">EDITAR</button>
               <button class="btn-danger" @click="eliminar(obra.id)">ELIMINAR</button>
             </td>
           </tr>
@@ -77,8 +76,12 @@
       <div class="modal">
         <h3>Fotos de la Obra</h3>
 
-        <div class="modal-images">
-          <img v-for="(foto, index) in fotosSeleccionadas" :key="index" :src="foto" />
+        <div v-if="fotosSeleccionadas.length > 0" class="modal-images">
+          <img v-for="(foto, index) in fotosSeleccionadas" :key="index" :src="foto" alt="Foto de obra" />
+        </div>
+
+        <div v-else class="no-photos">
+          <p>No hay fotos disponibles para esta inspección.</p>
         </div>
 
         <button class="btn-close" @click="closeModal">Cerrar</button>
@@ -118,8 +121,21 @@ export default {
     toggleDarkMode() {
       this.darkMode = !this.darkMode;
     },
-    openModal(fotos) {
-      this.fotosSeleccionadas = fotos;
+    openModal(fotosString) {
+      if (!fotosString || fotosString.trim() === "") {
+        this.fotosSeleccionadas = [];
+      } else {
+        const listaRaw = fotosString.split(',').map(f => f.trim());
+
+        this.fotosSeleccionadas = listaRaw.map(url => {
+          if (url.includes("drive.google.com")) {
+            return url.replace("/view?usp=drive_link", "")
+                      .replace("/view", "")
+                      .replace("file/d/", "uc?export=view&id=");
+          }
+          return url;
+        });
+      }
       this.showModal = true;
     },
     closeModal() {
@@ -130,9 +146,6 @@ export default {
     },
     descargarPdf(obra) {
       window.open(obra.pdf, "_blank");
-    },
-    editar() {
-      
     },
     async eliminar(id) {
       if (!confirm("¿Seguro que querés eliminar esta obra?")) return;
@@ -159,9 +172,8 @@ export default {
       this.loading = true;
 
       try {
-        const response = getObras();
-        const data = await response.json();
-
+        const data = await getObras();
+        console.log("data: ", JSON.stringify(data, null, 2))
         this.obras = data;
       } catch (error) {
         console.error("Error cargando obras:", error);
