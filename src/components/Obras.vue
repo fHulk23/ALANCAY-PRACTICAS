@@ -88,7 +88,8 @@
 </template>
 
 <script>
-import { supabase } from "../service/supabase";
+import { getObras, deleteObra } from '@/service/obrasServices';
+
 export default {
   name: "Obras",
   data() {
@@ -138,18 +139,13 @@ export default {
 
       this.loading = true;
 
-      const { error } = await supabase
-        .from("obras")
-        .delete()
-        .eq("id", id);
-
-      if (error) {
+      try {
+        await deleteObra(id);
+        await this.cargarObras();
+      } catch (error) {
         console.error("Error eliminando obra:", error);
-        this.loading = false;
-        return;
       }
 
-      await this.cargarObras();
       this.loading = false;
     },
     // Función auxiliar para formatear el periodo
@@ -162,30 +158,14 @@ export default {
     async cargarObras() {
       this.loading = true;
 
-      const { data, error } = await supabase
-        .from("obras")
-        .select("*")
-        .order("created_at", { ascending: false });
+      try {
+        const response = getObras();
+        const data = await response.json();
 
-      if (error) {
+        this.obras = data;
+      } catch (error) {
         console.error("Error cargando obras:", error);
-        this.loading = false;
-        return;
       }
-
-      this.obras = data.map((o) => ({
-        id: o.id,
-        periodo: this.formatearPeriodo(o.created_at), // Generamos el periodo aquí
-        expediente: o.expediente,
-        inspector: o.inspector,
-        presidenteRegional: o.presidente_regional,
-        representanteTecnico: o.representante_tecnico,
-        consorcio: o.consorcio,
-        regional: o.regional,
-        fotos: o.fotos ? o.fotos.split(",") : [],
-        excel: o.excel,
-        pdf: o.pdf,
-      }));
 
       this.loading = false;
     },
@@ -205,7 +185,7 @@ export default {
           obra.representanteTecnico.toLowerCase().includes(texto) ||
           obra.consorcio.toLowerCase().includes(texto) ||
           obra.regional.toLowerCase().includes(texto) ||
-          obra.periodo.toLowerCase().includes(texto); // También filtramos por periodo
+          obra.periodo.toLowerCase().includes(texto);
 
         const coincideRegional = this.filtroRegion === "" || obra.regional === this.filtroRegion;
 

@@ -1,13 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 
-const baseURL = 'https://criptoya.com/api/satoshitango/';
+const apiClient = axios.create({
+  baseURL: "https://localhost:5001/api"
+});
 
-export async function getCryptoValues(cryptoCode) {
-  try {
-    const resp = await axios.get(`${baseURL}${cryptoCode}/ars`);
-    return resp.data;
-  } catch (error) {
-    console.error(error, '- Error al obtener detalles de la Api');
-    throw error;
-  }
-}
+apiClient.interceptors.request.use((config) => {
+  config.headers["TokenAuthorization"] = "BIUSHDFSDF823747234WBJDFSDFA8888738B"
+
+  return config;
+});
+
+export default apiClient;
