@@ -49,19 +49,31 @@
 
       <div class="input-group">
         <label>Link Foto</label>
-        <input type="text" v-model="linkFotos" placeholder="https://..." />
+        <div class="input-with-btn">
+          <input type="text" v-model="linkFotos" placeholder="https://..." />
+          <button @click="validarLink(linkFotos)">Validar</button>
+          <button class="delete-btn" @click="limpiarCampo('fotos')">🗑️</button>
+        </div>
         <p v-if="errores.fotos" class="gov-error">{{ errores.fotos }}</p>
       </div>
 
       <div class="input-group">
         <label>Link PDF Firmado</label>
-        <input type="text" v-model="linkPdf" placeholder="https://..." />
+        <div class="input-with-btn">
+          <input type="text" v-model="linkPdf" placeholder="https://..." />
+          <button @click="validarLink(linkPdf)">Validar</button>
+          <button class="delete-btn" @click="limpiarCampo('pdf')">🗑️</button>
+        </div>
         <p v-if="errores.pdf" class="gov-error">{{ errores.pdf }}</p>
       </div>
 
       <div class="input-group">
         <label>Link Planilla Excel</label>
-        <input type="text" v-model="linkExcel" placeholder="https://..." />
+        <div class="input-with-btn">
+          <input type="text" v-model="linkExcel" placeholder="https://..." />
+          <button @click="validarLink(linkExcel)">Validar</button>
+          <button class="delete-btn" @click="limpiarCampo('excel')">🗑️</button>
+        </div>        
         <p v-if="errores.excel" class="gov-error">{{ errores.excel }}</p>
       </div>
 
@@ -114,6 +126,28 @@ const toggleDarkMode = () => { darkMode.value = !darkMode.value; };
 
 const expedientes = ref<Expediente[]>([]);
 const loading = ref(false);
+
+const validarLink = (url: string) => {
+  if (!url) {
+    alert("Ingresá un link primero.");
+    return;
+  }
+
+  if (!esURLValida(url)) {
+    alert("El link no es válido.");
+    return;
+  }
+
+  window.open(url, "_blank");
+};
+
+const limpiarCampo = (tipo: "fotos" | "pdf" | "excel") => {
+  if (tipo === "fotos") linkFotos.value = "";
+  if (tipo === "pdf") linkPdf.value = "";
+  if (tipo === "excel") linkExcel.value = "";
+
+  errores.value[tipo] = "";
+};
 
 const cargarExpedientes = async () => {
   loading.value = true;
@@ -198,6 +232,44 @@ const volver = () => {
 </script>
 
 <style scoped>
+.delete-btn {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  background-color: #dc3545 !important;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.delete-btn:hover {
+  background-color: #a71d2a;
+}
+
+.input-with-btn {
+  display: flex;
+  gap: 10px;
+}
+
+.input-with-btn input {
+  flex: 1;
+}
+
+.input-with-btn button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.input-with-btn button:hover {
+  background-color: #0056b3;
+}
 /* --- CONTENEDOR PRINCIPAL --- */
 .gov-container {
   width: 100%;
