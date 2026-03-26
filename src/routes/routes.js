@@ -4,6 +4,7 @@ import Home from '@/components/Home.vue'
 import Obras from '@/components/Obras.vue'
 import InicioSesion from '@/components/InicioSesion.vue'
 import RegistroUsuario from '@/components/RegistroUsuario.vue'
+import EditObra from '@/components/EditObra.vue'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/Obras', 
     name: 'Obras',
     component: Obras
+  },
+  {
+    path: '/EditarObra/:id', 
+    name: 'EditObra',
+    component: EditObra
   }
 ]
 

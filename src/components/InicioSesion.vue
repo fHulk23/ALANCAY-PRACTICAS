@@ -28,7 +28,14 @@ const password = ref("")
 const login = () => {
   const usuarioGuardado = JSON.parse(localStorage.getItem("usuario"))
 
-  if (
+  if (usuario.value === "admin" && password.value === "admin") {
+    localStorage.setItem("nombreCompleto", "Administrador")
+    localStorage.setItem("rol", "Admin")
+    localStorage.setItem("logueado", "true")
+
+    router.push("/Home")
+    
+  } else if (
     usuarioGuardado &&
     usuarioGuardado.usuario === usuario.value &&
     usuarioGuardado.password === password.value
@@ -38,6 +45,7 @@ const login = () => {
     localStorage.setItem("logueado", "true")
 
     router.push("/Home")
+    
   } else {
     alert("Usuario o contraseña incorrectos")
   }

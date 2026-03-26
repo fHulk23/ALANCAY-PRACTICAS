@@ -33,3 +33,13 @@ export async function createObra(data) {
     throw error;
   }
 }
+
+export async function updateObra(id, data) {
+  try {
+    const resp = await apiClient.put(`/obras/${id}`, data);
+    return resp.data;
+  } catch (error) {
+    console.error(error, "- Error al actualizar obra");
+    throw error;
+  }
+}

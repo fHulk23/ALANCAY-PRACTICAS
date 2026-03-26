@@ -65,6 +65,7 @@
               <button class="btn-danger" @click="descargarPdf(obra)">PDF</button>
             </td>
             <td v-if="rol == 'Admin'">
+              <button class="btn-success" @click="editar(obra.id)">EDITAR</button>
               <button class="btn-danger" @click="eliminar(obra.id)">ELIMINAR</button>
             </td>
           </tr>
@@ -160,6 +161,9 @@ export default {
       }
 
       this.loading = false;
+    },
+    async editar(id){
+      this.$router.push(`/EditarObra/${id}`);
     },
     // Función auxiliar para formatear el periodo
     formatearPeriodo(fechaIso) {
