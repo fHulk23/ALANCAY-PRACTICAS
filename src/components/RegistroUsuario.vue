@@ -35,11 +35,21 @@ const password = ref("")
 const rol = ref("")
 
 const registrar = () => {
+  if (rol.value === "Admin") {
+    alert("Para crear una cuenta administradora, debe enviar un mail al centro de computos.");
+    return; 
+  }
+
+  if (!nombreCompleto.value || !usuario.value || !password.value || !rol.value) {
+    alert("Por favor, complete todos los campos.");
+    return;
+  }
+
   const nuevoUsuario = {
     nombreCompleto: nombreCompleto.value,
     usuario: usuario.value,
     password: password.value,
-    rol: rol.value ?? "Inspector"
+    rol: rol.value
   }
 
   localStorage.setItem("usuario", JSON.stringify(nuevoUsuario))
