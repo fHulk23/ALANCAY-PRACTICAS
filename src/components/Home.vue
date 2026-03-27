@@ -66,12 +66,12 @@ export default {
     },
 
     logout() {
-      // Limpiamos todo el rastro de la sesión
+      
       localStorage.removeItem("logueado")
       localStorage.removeItem("nombreCompleto")
       localStorage.removeItem("rol")
       
-      // Redirigimos al Login
+      
       this.$router.push("/")
     }
   }
@@ -86,7 +86,7 @@ export default {
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* --- HEADER --- */
+
 .header {
   background-color: #1565c0;
   color: white;
@@ -96,7 +96,7 @@ export default {
 
 .header-content {
   display: flex;
-  justify-content: space-between; /* Empuja los elementos a los extremos */
+  justify-content: space-between; 
   align-items: center;
   max-width: 1400px;
   margin: 0 auto;
@@ -113,7 +113,7 @@ export default {
   opacity: 0.9;
 }
 
-/* --- BOTÓN CERRAR SESIÓN --- */
+
 .logout-btn {
   background-color: transparent;
   color: white;
@@ -128,13 +128,13 @@ export default {
 
 .logout-btn:hover {
   background-color: white;
-  color: #c62828; /* Rojo al pasar el mouse para indicar salida */
+  color: #c62828; 
   border-color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* --- OPCIONES / CARDS --- */
+
 .options-container {
   flex: 1;
   display: flex;
@@ -151,7 +151,7 @@ export default {
 }
 
 .option-card:hover {
-  width: 55%; /* Efecto de expansión sutil */
+  width: 55%; 
 }
 
 .overlay {
@@ -165,7 +165,7 @@ export default {
 }
 
 .option-card:hover .overlay {
-  background: rgba(21, 101, 192, 0.6); /* Tinte azul al hacer hover */
+  background: rgba(21, 101, 192, 0.6); 
 }
 
 .overlay h1 {
@@ -175,7 +175,7 @@ export default {
   pointer-events: none;
 }
 
-/* --- RESPONSIVE --- */
+
 @media (max-width: 768px) {
   .header { padding: 15px 20px; }
   .user-info { font-size: 0.9rem; }

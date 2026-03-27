@@ -1,7 +1,7 @@
 <template>
   <div :class="['gov-container', { dark: darkMode }]">
 
-    <!-- Barra superior -->
+    
     <div class="top-bar">
       <button class="back-btn" @click="volver">
         ⬅ Volver
@@ -17,12 +17,12 @@
       </button>
     </div>
 
-    <!-- Header -->
+    
     <header class="gov-header">
       <h2>✏️ Editar Obra</h2>
     </header>
 
-    <!-- Cards de expedientes -->
+    
     <div v-if="loading" class="gov-info">
       Cargando expedientes...
     </div>
@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <!-- Links del expediente -->
+    
     <div v-if="expedienteSeleccionado" class="gov-card">
       <h2>🔗 Links del Expediente</h2>
 
@@ -232,24 +232,24 @@ const volver = () => {
   flex-direction: column;
   align-items: center;
   transition: background-color 0.3s ease, color 0.3s ease;
-  background-color: #f4f6f8; /* Fondo que ahora sí llena toda la pantalla */
+  background-color: #f4f6f8; 
   color: #333;
   box-sizing: border-box;
 }
 
-/* --- BARRA SUPERIOR (Layout expansivo) --- */
+
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 1400px; /* Evita que los botones se peguen demasiado a los bordes en monitores 4K */
+  max-width: 1400px; 
   margin-bottom: 30px;
   position: relative;
   min-height: 60px;
 }
 
-/* Perfil centrado */
+
 .profile-info { 
   display: flex; 
   flex-direction: column; 
@@ -277,7 +277,7 @@ const volver = () => {
   letter-spacing: 0.5px;
 }
 
-/* Botones laterales */
+
 .back-btn {
   background-color: transparent;
   color: #1a3e7a;
@@ -308,7 +308,7 @@ const volver = () => {
   z-index: 10;
 }
 
-/* --- HEADER --- */
+
 .gov-header { 
   text-align: center; 
   background-color: #1a3e7a; 
@@ -324,10 +324,10 @@ const volver = () => {
 .gov-header h1 { margin: 0; font-size: 2.2rem; letter-spacing: -0.5px; }
 .gov-header p { margin: 10px 0 0 0; font-size: 1.1rem; color: #d0d8ea; font-weight: 300; }
 
-/* --- GRID DE EXPEDIENTES (Uso total del espacio) --- */
+
 .expedientes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Tarjetas más grandes y fluidas */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
   gap: 20px;
   margin-bottom: 40px;
   width: 100%;
@@ -372,7 +372,7 @@ const volver = () => {
   line-height: 1.4;
 }
 
-/* --- FORMULARIO Y LINKS --- */
+
 .gov-card {
   background: white;
   border-top: 6px solid #1a3e7a;
@@ -380,7 +380,7 @@ const volver = () => {
   margin-bottom: 40px;
   border-radius: 15px;
   width: 100%;
-  max-width: 850px; /* Ancho controlado para lectura cómoda */
+  max-width: 850px; 
   box-shadow: 0px 15px 35px rgba(0,0,0,0.08);
 }
 
@@ -440,12 +440,12 @@ const volver = () => {
   box-shadow: 0 5px 15px rgba(26, 62, 122, 0.3);
 }
 
-/* --- ESTADOS Y FOOTER --- */
+
 .gov-error { color: #d32f2f; font-weight: 600; font-size: 0.85rem; margin-top: 6px; }
 .gov-info { font-size: 1.2rem; color: #1a3e7a; padding: 40px; font-weight: 600; }
 .gov-footer { text-align: center; padding: 40px 0; color: #888; font-size: 0.9rem; width: 100%; }
 
-/* --- MODO OSCURO (DARK MODE) --- */
+
 .dark { background-color: #121212; color: #e0e0e0; }
 
 .dark .user-name { color: #4e8cff; }
@@ -477,7 +477,7 @@ const volver = () => {
 .dark .gov-btn { background-color: #4e8cff; color: #0a1931; }
 .dark .gov-footer { color: #555; }
 
-/* --- RESPONSIVE --- */
+
 @media (max-width: 900px) {
   .gov-container { padding: 15px 20px; }
   .top-bar { flex-direction: row; flex-wrap: wrap; }

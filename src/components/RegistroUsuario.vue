@@ -75,12 +75,12 @@ select {
   cursor: pointer;
   transition: 0.2s;
 
-  /* Quitar estilo nativo */
+  
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
 
-  /* Flecha personalizada */
+  
   background-image: url("data:image/svg+xml;utf8,<svg fill='%231e3a8a' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
   background-position: right 12px center;

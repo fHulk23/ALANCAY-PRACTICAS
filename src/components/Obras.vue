@@ -41,7 +41,7 @@
             <th>Representante Técnico</th>
             <th>Consorcio</th>
             <th>Regional</th>
-            <th>Fotos</th>
+            <th>Foto</th>
             <th>PDF / Excel</th>
             <th v-if="rol == 'Admin'"></th>
           </tr>
@@ -57,7 +57,7 @@
             <td>{{ obra.regional }}</td>
 
             <td>
-              <button class="btn-primary" @click="openModal(obra.fotos)">Ver Fotos</button>
+              <button class="btn-primary" @click="openModal(obra.fotos)">Ver Foto</button>
             </td>
 
             <td>
@@ -123,21 +123,7 @@ export default {
       this.darkMode = !this.darkMode;
     },
     openModal(fotosString) {
-      if (!fotosString || fotosString.trim() === "") {
-        this.fotosSeleccionadas = [];
-      } else {
-        const listaRaw = fotosString.split(',').map(f => f.trim());
-
-        this.fotosSeleccionadas = listaRaw.map(url => {
-          if (url.includes("drive.google.com")) {
-            return url.replace("/view?usp=drive_link", "")
-                      .replace("/view", "")
-                      .replace("file/d/", "uc?export=view&id=");
-          }
-          return url;
-        });
-      }
-      this.showModal = true;
+      window.open(fotosString, "_blank");
     },
     closeModal() {
       this.showModal = false;
@@ -165,7 +151,7 @@ export default {
     async editar(id){
       this.$router.push(`/EditarObra/${id}`);
     },
-    // Función auxiliar para formatear el periodo
+    
     formatearPeriodo(fechaIso) {
       if (!fechaIso) return "N/A";
       const fecha = new Date(fechaIso);
@@ -213,7 +199,7 @@ export default {
 </script>
 
 <style scoped>
-/* --- ESTILOS ANTERIORES SE MANTIENEN IGUAL --- */
+
 .obras-container {
   width: 100%;
   min-height: 100vh;
@@ -305,7 +291,7 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1000px; /* Un poco más ancho por la nueva columna */
+  min-width: 1000px; 
 }
 
 thead {
@@ -329,7 +315,7 @@ td {
   font-size: 14px;
 }
 
-/* Estilo para resaltar el periodo */
+
 .periodo-tag {
   font-weight: bold;
   color: #1565c0;
